@@ -6,10 +6,10 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "deploy": "npm run build && devvit upload",
+    "deploy": "devvit upload",
     "dev": "devvit playtest",
     "postinstall": "npm run build",
-    "launch": "npm run build && npm run deploy && devvit publish",
+    "launch": "npm run deploy && devvit publish",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "login": "devvit login",
     "prettier": "prettier-package-json --write ./package.json && prettier --write .",
