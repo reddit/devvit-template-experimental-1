@@ -43,8 +43,5 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite"
-  },
-  "dev": {
-    "subreddit": "devvit_exp_1_dev"
   }
 }
