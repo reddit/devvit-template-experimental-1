@@ -63,15 +63,15 @@ import { redis } from '@devvit/web/server';
 
 const key = 'count';
 
-export const incrementGet = async () => {
+export const countGet = async () => {
   return Number((await redis.get(key)) ?? 0);
 };
 
-export const incrementIncrement = async () => {
+export const countIncrement = async () => {
   return await redis.incrBy(key, 1);
 };
 
-export const incrementDecrement = async () => {
+export const countDecrement = async () => {
   return await redis.incrBy(key, -1);
 };
 ```
@@ -82,25 +82,21 @@ The tests can be:
 // src/server/core/increment.test.ts
 import { expect } from 'vitest';
 import { test } from '../test';
-import {
-  incrementDecrement,
-  incrementGet,
-  incrementIncrement,
-} from './increment';
+import { countDecrement, countGet, countIncrement } from './increment';
 
 test('Should increment the count', async () => {
-  const count = await incrementGet();
+  const count = await countGet();
   expect(count).toBe(0);
-  const newCount = await incrementIncrement();
+  const newCount = await countIncrement();
   expect(newCount).toBe(1);
 });
 
 test('Should decrement the count', async () => {
   // Note how this is running against the same key as the previous function
   // and no mocks or resetting of mocks was needed!
-  const count = await incrementGet();
+  const count = await countGet();
   expect(count).toBe(0);
-  const newCount = await incrementDecrement();
+  const newCount = await countDecrement();
   expect(newCount).toBe(-1);
 });
 ```
