@@ -6,9 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "deploy": "devvit upload",
+    "deploy": "npm run type-check && npm run lint && npm run test && devvit upload",
     "dev": "devvit playtest",
-    "postinstall": "npm run build",
     "launch": "npm run deploy && devvit publish",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "login": "devvit login",
