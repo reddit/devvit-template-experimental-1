@@ -6,6 +6,7 @@ import { createServer, getServerPort } from '@devvit/web/server';
 import { menu } from './routes/menu';
 import { triggers } from './routes/triggers';
 import { appRouter } from './trpc';
+import { createContext } from './context';
 
 const app = new Hono();
 
@@ -15,6 +16,7 @@ api.use(
   trpcServer({
     endpoint: '/api/trpc',
     router: appRouter,
+    createContext,
   })
 );
 

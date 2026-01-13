@@ -1,7 +1,9 @@
 import { initTRPC } from '@trpc/server';
 import { transformer } from '../transformer';
 import { Context } from './context';
-import { context, reddit, redis } from '@devvit/web/server';
+import { context, reddit } from '@devvit/web/server';
+import { countDecrement, countGet, countIncrement } from './core/count';
+import { z } from 'zod';
 
 /**
  * Initialization of tRPC backend
@@ -22,38 +24,40 @@ export const appRouter = t.router({
   init: t.router({
     get: publicProcedure.query(async () => {
       const [count, username] = await Promise.all([
-        redis.get('count'),
+        countGet(),
         reddit.getCurrentUsername(),
       ]);
 
       return {
-        count: count ? parseInt(count) : 0,
+        count,
         postId: context.postId,
         username,
       };
     }),
   }),
   counter: t.router({
-    increment: publicProcedure.mutation(async () => {
-      console.log('incrementing count');
-      const { postId } = context;
-      return {
-        count: await redis.incrBy('count', 1),
-        postId,
-        type: 'increment',
-      };
-    }),
-    decrement: publicProcedure.mutation(async () => {
-      console.log('decrementing count');
-      const { postId } = context;
-      return {
-        count: await redis.incrBy('count', -1),
-        postId,
-        type: 'decrement',
-      };
-    }),
-    get: publicProcedure.query(() => {
-      return 0;
+    increment: publicProcedure
+      .input(z.number().optional())
+      .mutation(async ({ input }) => {
+        const { postId } = context;
+        return {
+          count: await countIncrement(input),
+          postId,
+          type: 'increment',
+        };
+      }),
+    decrement: publicProcedure
+      .input(z.number().optional())
+      .mutation(async ({ input }) => {
+        const { postId } = context;
+        return {
+          count: await countDecrement(input),
+          postId,
+          type: 'decrement',
+        };
+      }),
+    get: publicProcedure.query(async () => {
+      return await countGet();
     }),
   }),
 });
